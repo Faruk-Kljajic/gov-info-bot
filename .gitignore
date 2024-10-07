@@ -1,11 +1,18 @@
-# Python
+# IntelliJ IDEA
+.idea/
+
+# Default ignored files
+/shelf/
+
+# Editor-based HTTP Client requests
+/httpRequests/
+
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# Virtual environment
 venv/
-__pycache__/
 
-# Docker
-*.log
-Dockerfile
-docker-compose.yml
-
-# Node.js
-node_modules/
+# Pytest cache
+.pytest_cache/

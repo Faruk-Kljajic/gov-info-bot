@@ -18,6 +18,6 @@ venv/
 .pytest_cache/
 
 # sensitive data
-gov-info-backend\app\config.py
-gov-info-backend\app\database
-gov-info-backend\.gitignore
+app/config.py
+app/database/
+/.gitignore

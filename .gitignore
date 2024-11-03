@@ -16,3 +16,8 @@ venv/
 
 # Pytest cache
 .pytest_cache/
+
+# sensitive data
+app/config.py
+app/database/
+/.gitignore

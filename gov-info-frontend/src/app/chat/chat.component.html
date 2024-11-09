@@ -1,0 +1,11 @@
+<div class="chat-container">
+  <div class="messages">
+    <div *ngFor="let message of messages">
+      <p><strong>{{ message.sender }}:</strong> {{ message.text }}</p>
+    </div>
+  </div>
+  <div class="input-container">
+    <input [(ngModel)]="userInput" placeholder="Frage zur Nationalratswahl 2024" />
+    <button (click)="sendMessage()">Senden</button>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+.content {
+    padding-top: 10px;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+
+    mat-form-field {
+        width: 100%;
+    }
+}
+
+.mainContainer {
+    background-image: url("https://imgv3.fotor.com/images/gallery/Blue-geometric-pattern-background.jpg");
+    height: 100vh;
+    width: 100vw;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signupContainer {
+    width: 30rem;
+    border: 1px solid black; // Border color is set to blue, change it as needed
+    padding: 1.5rem; // Adjust the padding as needed
+    border-radius: 0.25rem; // Rounded corners with a 0.25rem radius
+    .title {
+        text-align: center;
+        font-family: 'Roboto', sans-serif;
+        font-weight: bold;
+        font-size: 30px;
+        color: #63C5DA;
+    }
+}
+
+.rowbutton {
+    display: flex;
+    justify-content: center;
+    // margin-bottom: 5px;
+    .action {
+        display: flex;
+        width: 100%;
+        gap: 10px;
+        justify-content: space-between;
+
+        button {
+            flex-grow: 1;
+        }
+    }
+}
+
+.signup {
+    color: #3f51b5;
+}

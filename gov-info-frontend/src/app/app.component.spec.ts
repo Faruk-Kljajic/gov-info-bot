@@ -3,27 +3,27 @@ import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
+    await TestBed.configureTestingModule( {
       imports: [AppComponent],
     }).compileComponents();
-  });
+  } );
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
-  });
+  } );
 
-  it(`should have the 'gov-info-frontend' title`, () => {
+  it(`should have the 'ai-chatbot-frontend' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('gov-info-frontend');
-  });
+    expect(app.title).toEqual('ai-chatbot-frontend');
+  } );
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, gov-info-frontend');
-  });
-});
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, ai-chatbot-frontend');
+  } );
+} );

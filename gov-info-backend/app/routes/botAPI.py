@@ -2,13 +2,17 @@ from langchain_openai.chat_models import ChatOpenAI
 import os
 from dotenv import load_dotenv
 import re
-from app.services.data_handler import get_results_for_region
+from ..services.data_handler import get_results_for_region
 
+
+dotenv_path = os.path.join(os.getcwd(), 'app/routes/.env')
+load_dotenv(dotenv_path=dotenv_path)
 # Laden der Umgebungsvariablen aus der .env-Datei
-load_dotenv()
-
 # API-Schlüssel aus der Umgebung holen
+#load_dotenv(dotenv_path='gov-info-backend/app/routes/.env')
 openai_api_key = os.getenv("OPENAI_API_KEY")
+
+
 
 # Initialisiere das Chat-Modell mit dem neuen Paket
 llm = ChatOpenAI(openai_api_key=openai_api_key, model="gpt-4o-mini", max_tokens=500, temperature=1, top_p=0.8)

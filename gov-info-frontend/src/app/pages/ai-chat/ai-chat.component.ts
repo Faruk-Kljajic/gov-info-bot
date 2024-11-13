@@ -33,7 +33,7 @@ export class AiChatComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  // Send message to backend
+  //Sendet Nachricht an Backend
 sendMessage(): void {
   if (this.message.trim() === '') return;
 

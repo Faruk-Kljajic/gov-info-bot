@@ -4,12 +4,12 @@ import pandas as pd
 import re
 from dotenv import load_dotenv
 
-# Lade die Umgebungsvariablen
+# Laden der Umgebungsvariablen
 dotenv_path = os.path.join(os.getcwd(), 'app/routes/.env')
 load_dotenv(dotenv_path=dotenv_path)
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
-# Setze den vollständigen Pfad zur CSV-Datei und versuche die Datei zu laden
+
 csv_path = os.path.join(os.getcwd(), 'app/ressources/wahldaten2024.csv')
 
 try:
@@ -25,11 +25,10 @@ except Exception as e:
     print(f"Ein unbekannter Fehler ist aufgetreten: {e}")
     df = pd.DataFrame()
 
-# Initialisiere das ChatGPT-Modell
+
 llm = ChatOpenAI(openai_api_key=openai_api_key, model="gpt-4o-mini", max_tokens=500, temperature=1, top_p=0.8)
 
 
-# Funktion zum Extrahieren des Gebiets oder der Partei aus der Frage
 def extract_gebiet_und_partei(frage):
     print(f"Extrahiere Gebiet und Partei aus der Frage: {frage}")  # Debugging
     gebiet = None
@@ -41,7 +40,6 @@ def extract_gebiet_und_partei(frage):
         partei = partei_match.group(1).strip()
         print(f"Extrahierte Partei: {partei}")  # Debugging
 
-    # Optional: Gebiet extrahieren, falls vorhanden
     gebiet_match = re.search(r"(in|für)\s([A-Za-z\s]+)", frage)
     if gebiet_match:
         gebiet = gebiet_match.group(2).strip()
@@ -71,9 +69,9 @@ def get_results_for_criteria(gebiet, partei):
     return daten_text
 
 
-# Hauptfunktion für den Chatbot
+# Hauptfunktion
 def frage_chatbot(frage):
-    print(f"Empfangene Frage: {frage}")  # Debugging
+    ## print(f"Empfangene Frage: {frage}")  # Debugging
     gebiet, partei = extract_gebiet_und_partei(frage)
 
     if gebiet or partei:

@@ -8,15 +8,11 @@ import { Observable } from 'rxjs';
 export class ApiService {
 
   private apiUrl = 'http://127.0.0.1:8000';
-  constructor(private http: HttpClient) { }
 
-  // GET-Anfrage für eine Begrüßung
-  getGreeting(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/`);
-  }
+  constructor(private http: HttpClient) {}
 
-  // POST-Anfrage für eine Berechnung
-  calculate(value: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/chat/`, { value });
-  }
+sendMessage(message: string): Observable<any> {
+  return this.http.post<any>('/api/chat/', { message });
+}
+
 }

@@ -5,7 +5,8 @@ import pandas as pd
 csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ressources', 'wahldaten2024.csv')
 df = pd.read_csv(csv_path, encoding='ISO-8859-15', sep=";", on_bad_lines='skip')
 
-# Funktion, um Ergebnisse für ein bestimmtes Gebiet zu holen
+# Funktion, um Ergebnis
+# se für ein bestimmtes Gebiet zu holen
 def get_results_for_region(region):
     # Filtere das DataFrame nach dem angegebenen Gebiet
     region_data = df[df['Gebietsname'] == region]

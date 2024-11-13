@@ -2,12 +2,14 @@ from langchain_openai.chat_models import ChatOpenAI
 import os
 from dotenv import load_dotenv
 import re
-from app.services.data_handler import get_results_for_region
+from ..services.data_handler import get_results_for_region
 
+
+dotenv_path = os.path.join(os.getcwd(), 'app/routes/.env')
+load_dotenv(dotenv_path=dotenv_path)
 # Laden der Umgebungsvariablen aus der .env-Datei
-load_dotenv()
-
 # API-Schlüssel aus der Umgebung holen
+#load_dotenv(dotenv_path='gov-info-backend/app/routes/.env')
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
 # Initialisiere das Chat-Modell mit dem neuen Paket
@@ -32,6 +34,6 @@ def frage_chatbot(frage):
     return antwort
 
 # Beispiel
-frage = "Was sind die Nationalratswahlergebnisse 2024 für Linz?"
+frage = "Was sind die Nationalratswahlergebnisse 2024 für Wien?"
 antwort = frage_chatbot(frage)
 print("Frage vom User:",frage,"\nAntwort des Chatbots:\n", antwort)

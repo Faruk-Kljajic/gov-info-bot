@@ -6,12 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { environment } from '../../../environments/environment.development';
-import { Injectable } from '@angular/core';
-import { Client, Message, Stomp } from '@stomp/stompjs';
-import { Observable, Subject } from 'rxjs';
-import { WebsocketService } from '../../service/websocket.service';
-import SockJS from 'sockjs-client';
+import {ApiService} from "../../service/api.service";
+import {CommonModule, NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-ai-chat',
@@ -22,18 +18,38 @@ import SockJS from 'sockjs-client';
     MatFormFieldModule,
     MatDialogModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    NgClass,
+    CommonModule
   ],
   templateUrl: './ai-chat.component.html',
   styleUrl: './ai-chat.component.scss'
 })
 export class AiChatComponent implements OnInit {
-  constructor(
-    private _stompService: WebsocketService
-  ) {}
-  ngOnInit(): void {
-    this._stompService.subscribe('topic/public', (): any => {
-      console.log('message received');
-    })
-  }
+  message: string = '';
+  messages: Array<{ text: string, sender: string }> = [];
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {}
+
+  // Send message to backend
+sendMessage(): void {
+  if (this.message.trim() === '') return;
+
+  // Zeige die Benutzernachricht
+  this.messages.push({ text: this.message, sender: 'user' });
+
+  // Sende Nachricht an das Backend und hole Antwort
+  this.apiService.sendMessage(this.message).subscribe(response => {
+    // Antwort vom Chatbot anzeigen
+    this.messages.push({ text: response.response, sender: 'bot' });
+  }, error => {
+    console.error('Fehler beim Senden der Nachricht:', error);
+  });
+
+  // Eingabefeld leeren
+  this.message = '';
+}
+
 }

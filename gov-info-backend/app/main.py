@@ -1,10 +1,20 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from .routes.botAPI import frage_chatbot  # Importiere die Chatbot-Funktion
+from fastapi.middleware.cors import CORSMiddleware
+
+from .routes.botAPI import frage_chatbot
 
 app = FastAPI()
 
-# Anfrage-Datenstruktur
+# Hinzufügen der CORS-Middleware direkt nach der App-Instanz
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],  # Stelle sicher, dass das die exakte URL des Frontends ist
+    allow_credentials=True,
+    allow_methods=["*"],  # Alle Methoden erlauben
+    allow_headers=["*"],  # Alle Header erlauben
+)
+
 class Message(BaseModel):
     message: str
 
@@ -15,7 +25,6 @@ async def read_root():
 @app.post("/chat/")
 async def chat_response(message: Message):
     try:
-        # Chatbot-Logik aufrufen
         response = frage_chatbot(message.message)
         return {"response": response}
     except Exception as e:

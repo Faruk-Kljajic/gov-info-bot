@@ -33,8 +33,18 @@ export class SignupLoginComponent implements OnInit{
   ngOnInit(): void{
   }
 
-  navigateToAIChat(){
-    sessionStorage.setItem('username', this.userForm.value.username);
-    this.router.navigate(['aiChat'] );
-  }
+navigateToAIChat() {
+  console.log('Button wurde geklickt - Navigation wird versucht');
+  sessionStorage.setItem('username', this.userForm.value.username);
+  this.router.navigate(['aiChat']).then(success => {
+    if (success) {
+      console.log('Navigation erfolgreich');
+    } else {
+      console.error('Navigation fehlgeschlagen');
+    }
+  });
+}
+
+
+
 }

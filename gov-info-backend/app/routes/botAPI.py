@@ -12,8 +12,6 @@ load_dotenv(dotenv_path=dotenv_path)
 #load_dotenv(dotenv_path='gov-info-backend/app/routes/.env')
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
-
-
 # Initialisiere das Chat-Modell mit dem neuen Paket
 llm = ChatOpenAI(openai_api_key=openai_api_key, model="gpt-4o-mini", max_tokens=500, temperature=1, top_p=0.8)
 
@@ -36,6 +34,6 @@ def frage_chatbot(frage):
     return antwort
 
 # Beispiel
-frage = "Was sind die Nationalratswahlergebnisse 2024 für Linz?"
+frage = "Was sind die Nationalratswahlergebnisse 2024 für Wien?"
 antwort = frage_chatbot(frage)
 print("Frage vom User:",frage,"\nAntwort des Chatbots:\n", antwort)

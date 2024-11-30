@@ -3,9 +3,8 @@ import { SignupLoginComponent } from './pages/signup-login/signup-login.componen
 import { AiChatComponent } from './pages/ai-chat/ai-chat.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'signup', pathMatch: 'full' },
-  { path: 'signup', component: SignupLoginComponent },
+  { path: '', redirectTo: 'aiChat', pathMatch: 'full' },
   { path: 'aiChat', component: AiChatComponent },
-  { path: '**', redirectTo: 'signup' } // Alle ungültigen Routen zu 'signup' umleiten
+  { path: '**', redirectTo: 'aiChat' } // Alle ungültigen Routen zu 'aiChat' umleiten
 ];
 

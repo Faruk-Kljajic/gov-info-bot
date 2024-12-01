@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { SignupLoginComponent } from './pages/signup-login/signup-login.component';
 import { AiChatComponent } from './pages/ai-chat/ai-chat.component';
 
 export const routes: Routes = [

@@ -9,9 +9,6 @@ router = APIRouter()
 class ChatRequest(BaseModel):
     message: str
 
-@router.get("/test")
-async def test_endpoint():
-    return {"message": "Test erfolgreich"}
 
 # Chat-Endpunkt
 @router.post("/api/chat")

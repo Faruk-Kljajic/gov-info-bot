@@ -1,5 +1,5 @@
 from application.services.retrieval import filter_data
-from application.services.generation import generate_response
+from application.services.generation import generate_response, count_tokens, MAX_TOKENS
 from langchain_openai.chat_models import ChatOpenAI
 from typing import Optional
 
@@ -29,4 +29,10 @@ def process_query(df: pd.DataFrame, llm: ChatOpenAI, frage: str, gebiet: Optiona
 
     # Schritt 2: Antwort basierend auf den Daten generieren
     prompt = f"{frage}\nHier sind die relevanten Wahldaten:\n{daten}\nBitte beantworte die Frage basierend auf den obigen Daten."
+
+    # Kürze den Prompt, falls erforderlich
+    tokens = count_tokens(prompt)
+    if tokens > MAX_TOKENS:
+        prompt = " ".join(tokens[:MAX_TOKENS]) + "\n(Der Prompt wurde gekürzt.)"
+
     return generate_response(llm, prompt)

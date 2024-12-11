@@ -8,6 +8,7 @@ def filter_data(
     weitere_kriterien: Optional[dict] = None,
     sortiere_nach: Optional[str] = None,
     min_abgegebene: Optional[int] = None,
+    max_output_length: int = 1000,  # Maximale Länge der Ausgabe
 ) -> str:
     """
     Filtert die CSV-Daten basierend auf Gebiet, Partei und zusätzlichen Kriterien.
@@ -18,6 +19,7 @@ def filter_data(
     :param weitere_kriterien: Zusätzliche Filterkriterien als Dictionary.
     :param sortiere_nach: Spalte, nach der die Ergebnisse sortiert werden sollen.
     :param min_abgegebene: Mindestanzahl an abgegebenen Stimmen.
+    :param max_output_length: Maximale Länge der Ausgabe.
     :return: Ein String mit den gefilterten Ergebnissen.
     """
     if df.empty:
@@ -59,5 +61,10 @@ def filter_data(
         return "Keine passenden Daten gefunden."
 
     # Konvertiere die gefilterten Daten in einen String
-    return gefilterte_daten.to_string(index=False)
+    gefilterte_daten_string = gefilterte_daten.to_string(index=False)
 
+    # Beschränke die Länge der Ausgabe
+    if len(gefilterte_daten_string) > max_output_length:
+        gefilterte_daten_string = gefilterte_daten_string[:max_output_length] + "...\n(Daten gekürzt)"
+
+    return gefilterte_daten_string

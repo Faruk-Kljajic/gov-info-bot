@@ -5,11 +5,12 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
+export class ChatService {
+   private apiUrl = 'http://localhost:8000/chat';
   constructor(private http: HttpClient) {}
 
   sendMessage(message: string): Observable<any> {
     console.log("Sende Nachricht an Backend:", message); // Debugging
-    return this.http.post<any>('/api/chat/', { message });
+    return this.http.post(`${this.apiUrl}/api/chat`, { message });
   }
 }

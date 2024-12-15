@@ -1,6 +1,7 @@
 # IntelliJ IDEA
 .idea/
-
+/gov-info-frontend/.angular/
+/gov-info-frontend/node_modules/
 # Default ignored files
 /shelf/
 
@@ -16,8 +17,13 @@ venv/
 
 # Pytest cache
 .pytest_cache/
+gov-info-frontend/package-lock.json
+gov-info-backend/__pycache__/
+
+
 
 # sensitive data
-app/config.py
-app/database/
-/.gitignore
+/gov-info-backend/app/config.py
+/gov-info-backend/.env
+/gov-info-backend/app/ressources
+/gov-info-backend/app/database

@@ -1,0 +1,11 @@
+<div #messagesContainer class="messages">
+  <div
+    *ngFor="let msg of messages"
+    class="message"
+    [ngClass]="{ 'user': msg.sender === 'user', 'bot': msg.sender === 'bot' }"
+    [innerHTML]="renderText(msg.text)"
+  >
+    {{ msg.text }}
+  </div>
+</div>
+

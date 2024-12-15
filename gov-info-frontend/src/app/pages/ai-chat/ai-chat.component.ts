@@ -1,12 +1,11 @@
 
-import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule  } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import {ApiService} from "../../service/api.service";
+import {ChatService} from "../../service/chat.service";
 import {CommonModule, NgClass} from "@angular/common";
 
 @Component({
@@ -29,27 +28,27 @@ export class AiChatComponent implements OnInit {
   message: string = '';
   messages: Array<{ text: string, sender: string }> = [];
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ChatService) {}
 
   ngOnInit(): void {}
 
-  //Sendet Nachricht an Backend
-sendMessage(): void {
-  if (this.message.trim() === '') return;
+  sendMessage(): void {
+    if (this.message.trim()) {
+      this.messages.push({ sender: 'user', text: this.message });
 
-  // Zeige die Benutzernachricht
-  this.messages.push({ text: this.message, sender: 'user' });
+      // Anfrage an das Backend senden
+      this.apiService.sendMessage(this.message).subscribe(
+        (response) => {
+          this.messages.push({ sender: 'bot', text: response.response });
+        },
+        (error) => {
+          console.error('Error:', error);
+          this.messages.push({ sender: 'bot', text: 'Server error, please try again later.' });
+        }
+      );
 
-  // Sende Nachricht an das Backend und hole Antwort
-  this.apiService.sendMessage(this.message).subscribe(response => {
-    // Antwort vom Chatbot anzeigen
-    this.messages.push({ text: response.response, sender: 'bot' });
-  }, error => {
-    console.error('Fehler beim Senden der Nachricht:', error);
-  });
-
-  // Eingabefeld leeren
-  this.message = '';
-}
+      this.message = ''; // Eingabefeld zurücksetzen
+    }
+  }
 
 }

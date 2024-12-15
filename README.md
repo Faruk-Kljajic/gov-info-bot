@@ -39,6 +39,8 @@ Gov Info Bot ist ein Chatbot, der dynamische Antworten auf Anfragen basierend au
 
 ### Frontend installieren
 
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.7.
+
 1. Wechsle in das Frontend-Verzeichnis:
 
     ```bash

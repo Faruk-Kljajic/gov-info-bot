@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from application.api.endpoints import chat, upload
 from application.core.settings import settings
-from application.core.config import CONFIG_CONSTANT
-
+from application.api.endpoints import chat_api
 
 app = FastAPI(
     title="Chatbot Backend",
@@ -19,13 +17,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(chat.router, prefix="/chat", tags=["Chat"])
-#app.include_router(upload.router, prefix="/upload", tags=["Upload"])
+app.include_router(chat_api.router, tags=["Chat API"])
 
 
 @app.get("/", tags=["Root"])
 async def root():
-    return {"message": f"Willkommen! Aktive Konfiguration: {CONFIG_CONSTANT}"}
+    return {
+        "message": "Willkommen beim Austrian Infobot Backend!",
+        "available_endpoints": [
+            {"path": "/api/chat", "description": "Chatbot-Endpoint"}
+        ],
+    }
 
 if __name__ == "__main__":
     import uvicorn

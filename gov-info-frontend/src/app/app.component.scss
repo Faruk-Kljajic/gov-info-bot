@@ -1,0 +1,238 @@
+/* Global Styles */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+}
+
+/* Header der App */
+#app-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background: linear-gradient(180deg, #ff0000 33%, #ffffff 33%, #ffffff 66%, #ff0000 66%);
+    position: relative; /* Ermöglicht die Platzierung eines überlappenden weißen Bereichs */
+    height: 80px; /* Höhe des Headers */
+    text-align: center;
+}
+
+.header-content {
+    background-color: #ffffff; /* Weißer Hintergrund für Text */
+    padding: 10px 20px; /* Abstand um den Text */
+    border-radius: 10px; /* Optional: Abgerundete Ecken */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: Schatten für besseren Kontrast */
+}
+
+#app-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #000; /* Schwarzer Text */
+}
+
+/* Hauptinhalt */
+#main-content {
+    display: flex;
+    justify-content: space-between; /* Chat und Historie nebeneinander */
+    height: calc(100vh - 80px); /* Platz für den Header abziehen */
+    width: 100%; /* Volle Breite */
+    margin: 0; /* Zentriere innerhalb der Seite */
+    padding: 0;
+
+}
+
+#chat-section {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin: 0; /* Kein äußerer Abstand */
+    padding: 0; /* Kein innerer Abstand */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#history-section {
+    flex: 1;
+    background-color: #e8e8e8;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin: 0; /* Kein äußerer Abstand */
+    padding: 0; /* Kein innerer Abstand */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Chat-Header */
+.chat-header,
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ffffff;
+    color: #000;
+    font-family: Arial, sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    height: 70px;
+    margin: 0;
+}
+
+.chat-header h2,
+.history-header {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+}
+
+
+/* Historien-Header */
+.history-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    font-family: Arial, sans-serif; /* Einheitliche Schriftart */
+    font-size: 1.5rem; /* Einheitliche Schriftgröße */
+    font-weight: bold; /* Einheitliche Schriftstärke */
+    color: #000; /* Schwarzer Text */
+    border-bottom: 1px solid #ddd; /* Trennlinie */
+    height: 70px;
+    margin: 0;
+}
+
+/* Nachrichtenbereich */
+#messageArea {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+#messageArea li {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 70%;
+    line-height: 1.5;
+    display: inline-block;
+}
+
+#messageArea li.user-message {
+    background-color: #e0e0e0;
+    align-self: flex-end; /* Benutzer-Eingaben rechts */
+    text-align: right;
+    color: #333;
+}
+
+#messageArea li.bot-message {
+    background-color: #e8e8e8;
+    align-self: flex-start; /* Chatbot-Antworten links */
+    text-align: left;
+    color: #333;
+}
+
+/* Nachrichtenformular */
+#messageForm {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #f4f4f4;
+    width: 100%;
+    border-top: 1px solid #ececec;
+    box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+}
+
+#messageForm input {
+    flex: 1;
+    padding: 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px;
+    outline: none;
+    background-color: #e0e0e0;
+    color: #333;
+    margin-right: 10px;
+}
+
+#messageForm input::placeholder {
+    color: #777;
+}
+
+#messageForm button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#messageForm button:hover {
+    background-color: #333;
+}
+
+/* Button-Styles */
+.button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px;
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #333;
+}
+
+.archive-button {
+    background-color: #ff5722;
+}
+
+.archive-button:hover {
+    background-color: #e64a19;
+}
+
+/* RAG-Button-Stil */
+.rag-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    background-color: #2196f3; /* Blau */
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.rag-button:hover {
+    background-color: #1976d2; /* Dunkleres Blau */
+}
+
+.rag-button.active {
+    background-color: #4caf50; /* Grün, wenn aktiv */
+}
+
+.rag-button.active:hover {
+    background-color: #388e3c; /* Dunkleres Grün */
+}
+
+

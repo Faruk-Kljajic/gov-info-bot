@@ -1,6 +1,4 @@
-from langchain_openai.chat_models import ChatOpenAI
-from langchain.schema import BaseMessage
-from langchain.chat_models.openai import ChatOpenAI
+from langchain_community.chat_models.openai import ChatOpenAI
 import tiktoken
 
 def count_tokens(prompt: str, model: str = "gpt-4") -> int:

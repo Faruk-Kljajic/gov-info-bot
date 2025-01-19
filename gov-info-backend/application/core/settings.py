@@ -1,5 +1,3 @@
-# core/settings.py
-import os
 from pathlib import Path
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
@@ -16,8 +14,10 @@ else:
 
 class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
-    DATABASE_URL: str = "sqlite:///./test.db"
-    OPENAI_API_KEY: str  # Pflichtfeld
+    OPENAI_API_KEY: str = "default_openai_api_key"
+    KARLI_API_KEY: str = "default_karli_api_key"
+    API_URL: str = "http://localhost:8000"
+
 
     class Config:
         env_file = str(dotenv_path)  # Redundante Sicherheit

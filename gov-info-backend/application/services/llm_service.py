@@ -1,18 +1,34 @@
-from langchain.llms import OpenAI
+from typing import Any
 
-def generate_response_with_data(query, results, max_context_length: int = 1000):
-    # Gefundene Daten kombinieren
-    data_context = "\n".join([result.page_content for result in results])
+from application.services.llm_client import LLMClient
 
-    # Kürze die Daten, falls sie zu lang sind
-    if len(data_context) > max_context_length:
-        data_context = data_context[:max_context_length] + "...\n(Daten gekürzt)"
 
-    # Prompt erstellen
-    prompt = f"""
-    Benutzerfrage: {query}
-    Basierend auf den gefundenen Informationen:
-    {data_context}
-    Erstelle eine präzise Antwort für den Benutzer.
+class LLMService:
     """
-    return OpenAI(model="gpt-4", temperature=0.7).generate(prompt).content
+    Service, um mit verschiedenen LLMs zu interagieren.
+    """
+
+    def __init__(self, llm_client: LLMClient):
+        """
+        Initialisiert den Service mit einem spezifischen LLM-Client.
+        Args:
+            llm_client (LLMClient): Instanz eines LLM-Clients.
+        """
+        self.llm_client = llm_client
+
+    def analyze_prompt(self, user_msg: str) -> dict[str, Any]:
+        """
+        Übermittle den Prompt an das LLM und erhalte eine Antwort.
+        Args:
+            user_msg (str): Benutzer-Prompt.
+
+        Returns:
+            str: Antwort des LLMs als Text.
+        """
+        print(user_msg)
+        # Hier könnte ein Aufruf des LLM-Clients erfolgen
+        return self.llm_client.analyze_prompt(
+            system_msg="Du bist ein hilfreicher Assistent.",
+            user_msg=user_msg,
+        )
+

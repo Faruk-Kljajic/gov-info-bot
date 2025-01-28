@@ -1,13 +1,13 @@
 import json
 import os
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from info_bot_backend.application.services.data_search import DataService
-from info_bot_backend.application.utils.constants import FILE_NAME_JSON
+from info_bot_backend.application.utils.constants import FILE_NAME_JSON, SEARCH_KEY, JSON_FILE_URL
 
 
-# 1. JSON-Datei laden
+#  JSON-Datei laden
 def load_json_file(file_name):
     """
     Versucht, die JSON-Datei aus dem Ordner resources zu laden.
@@ -20,7 +20,7 @@ def load_json_file(file_name):
         dict: Geladene JSON-Daten.
     """
     # Absoluter Pfad zum resources-Ordner
-    resources_path = os.path.join(os.path.dirname(__file__), "../resources/downloads", file_name)
+    resources_path = os.path.join("../resources/downloads", file_name)
 
     try:
         # Prüfen, ob die Datei existiert
@@ -34,13 +34,13 @@ def load_json_file(file_name):
             # Wenn die Datei nicht existiert, starte Datensuche
             print(f"Datei nicht gefunden: {resources_path}. Starte Datensuche...")
             service = DataService()
-            service.fetch_and_download_data("Nationalratswahl 2024")
+            service.download_json(JSON_FILE_URL, FILE_NAME_JSON)
             return load_json_file(FILE_NAME_JSON)
     except Exception as e:
         print(f"Fehler beim Laden der Datei: {e}")
         raise
 
-# 2. Daten verarbeiten
+# Daten verarbeiten
 def process_data(json_data):
     documents = []
     for key, values in json_data.items():
@@ -69,36 +69,59 @@ def process_data(json_data):
     return documents
 
 
-# 3. Text in Abschnitte unterteilen
+# Text in Abschnitte unterteilen
 def split_documents(documents, chunk_size=1000, chunk_overlap=50):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
     splitted_docs = text_splitter.create_documents(documents)
     return splitted_docs
 
 
-# 4. Embeddings erstellen
+# Embeddings erstellen
 def generate_embeddings(documents, embedding_model="text-embedding-ada-002"):
     embeddings = OpenAIEmbeddings(model=embedding_model)
     return embeddings
 
 
-# 5. FAISS-Index erstellen
+# FAISS-Index erstellen
 def create_faiss_index(documents, embeddings):
     vectorstore = FAISS.from_texts([doc.page_content for doc in documents], embeddings)
     return vectorstore
 
 
-# 6. Index speichern
+# Index speichern
 def save_faiss_index(vectorstore, file_path):
     vectorstore.save_local(file_path)
 
+def rag_process(chunk_size=1000, chunk_overlap=50, embedding_model="text-embedding-ada-002") -> str:
+    """
+    Hauptprozess, der die Daten verarbeitet, in Abschnitte unterteilt,
+    Embeddings erstellt und den FAISS-Index speichert.
 
-# 7. FAISS-Index laden
-def load_faiss_index(file_path, embeddings):
-    return FAISS.load_local(file_path, embeddings)
+    Args:
+        chunk_size (int): Die Größe der Textabschnitte.
+        chunk_overlap (int): Die Überlappung zwischen den Abschnitten.
+        embedding_model (str): Das Modell für die Embeddings.
+    """
+    try:
+        # 1. JSON-Datei laden
+        json_data = load_json_file(FILE_NAME_JSON)
 
+        # 2. Daten verarbeiten
+        documents = process_data(json_data)
 
-# 8. Abfrage durchführen
-def query_faiss_index(vectorstore, query, k=3):
-    docs = vectorstore.similarity_search(query, k=k)
-    return docs
+        # 3. Dokumente in Abschnitte unterteilen
+        splitted_docs = split_documents(documents, chunk_size, chunk_overlap)
+
+        # 4. Embeddings erstellen
+        embeddings = generate_embeddings(splitted_docs, embedding_model)
+
+        # 5. FAISS-Index erstellen
+        vectorstore = create_faiss_index(splitted_docs, embeddings)
+
+        # 6. FAISS-Index speichern
+        index_path = os.path.join("../resources/faiss_index")
+        save_faiss_index(vectorstore, index_path)
+
+        return f"RAG-Prozess erfolgreich abgeschlossen. FAISS-Index gespeichert unter: {index_path}"
+    except Exception as e:
+        return f"Fehler im RAG-Prozess: {e}"

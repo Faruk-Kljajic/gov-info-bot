@@ -13,7 +13,9 @@
 /dataSources.local.xml
 
 # Virtual environment
-venv/
+.venv/
+
+
 
 # Pytest cache
 .pytest_cache/
@@ -23,7 +25,12 @@ gov-info-backend/__pycache__/
 
 
 # sensitive data
-/gov-info-backend/app/config.py
-/gov-info-backend/.env
-/gov-info-backend/app/ressources
-/gov-info-backend/app/database
+info_bot_backend/app/config.py
+.env
+.idea
+info_bot_backend/.env
+info_bot_backend/app/ressources
+info_bot_backend/app/database
+
+/info_bot_frontend/node_modules/
+/info_bot_frontend/.angular/

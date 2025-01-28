@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from info_bot_backend.application.api.endpoints import chat
+from info_bot_backend.application.api_endpoint import chat
 from info_bot_backend.application.utils.constants import CONFIG_CONSTANT
-
 
 app = FastAPI(
     title="Chatbot Backend",
@@ -17,9 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(chat.router, prefix="/chat", tags=["Chat"])
-#app.include_router(upload.router, prefix="/upload", tags=["Upload"])
-
+app.include_router(chat.router, tags=["Chat"])
 
 @app.get("/", tags=["Root"])
 async def root():

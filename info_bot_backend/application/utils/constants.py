@@ -1,6 +1,8 @@
 SYSTEM_MSG_1 = "Du bist ein hilfreicher Assistent. Bitte beantworte die Fragen der Benutzer."
+SYSTEM_MSG_2 = "Beantworte die Frage basierend auf den verfügbaren Informationen."
 DATA_GOV_AT_URL = "https://www.data.gv.at/katalog/api/3/action"
 JSON_FILE_URL = "https://www.data.gv.at/katalog/dataset/e40e3b00-1a98-4338-acb7-42547e6fee55/resource/085a967f-fb69-4d9b-b95c-dd38ddba4f1e/download/wahl_20241003_214746.json"
 CSV_FILE_URL = "https://www.data.gv.at/katalog/dataset/e40e3b00-1a98-4338-acb7-42547e6fee55/resource/ce85ad5c-e471-42c0-83e5-580dbb627717/download/wahl_20241003_214746.csv"
 FILE_NAME_JSON = "wahl_20241003_214746.json"
 CONFIG_CONSTANT = "DefaultConfigValue"
+SEARCH_KEY = "Ergebnisse der Nationalratswahl 2024"

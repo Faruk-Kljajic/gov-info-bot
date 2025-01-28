@@ -1,12 +1,15 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Union
 from langchain_community.vectorstores import FAISS
-import openai
+from openai import OpenAI
 from dotenv import load_dotenv
 import os
 
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import OpenAIEmbeddings
+from info_bot_backend.application.services.process_data import rag_process
+
+from info_bot_backend.application.utils.constants import SYSTEM_MSG_2, SYSTEM_MSG_1
 
 load_dotenv()
 
@@ -17,11 +20,10 @@ class LLMClient(ABC):
     """
 
     @abstractmethod
-    def analyze_prompt(self, system_msg: str, user_msg: str) -> Dict[str, Any]:
+    def analyze_prompt(self, user_msg: str) -> Dict[str, Any]:
         """
         Analysiere einen Benutzer-Prompt und gebe eine strukturierte Antwort zurück.
         Args:
-            system_msg (str): Systemnachricht (z. B. Kontext oder Anweisungen für das LLM).
             user_msg (str): Benutzer-Prompt.
 
         Returns:
@@ -30,7 +32,11 @@ class LLMClient(ABC):
         pass
 
     @abstractmethod
-    def create_response(self, system_msg, user_msg):
+    def create_response(self, user_msg):
+        pass
+
+    @abstractmethod
+    def create_rag_prompt(self, system_msg: str, user_msg: str, data: str):
         pass
 
 
@@ -54,88 +60,139 @@ class OpenAIClient(LLMClient):
         self.api_key = os.getenv("OPENAI_API_KEY")
         if not self.api_key:
             raise ValueError("OPENAI_API_KEY nicht in den Umgebungsvariablen gefunden.")
-        openai.api_key = self.api_key
+
+        # OpenAI-Client initialisieren
+        self.client = OpenAI(api_key=self.api_key)
 
         # Initialisiere Embedding-Modell
         self.embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 
         # Vectorstore-Speicherort definieren
-        self.vectorstore_path = os.path.join(os.path.dirname(__file__), "../resources/faiss_index")
+        self.vectorstore_path = os.path.join("../resources/faiss_index")
 
         # Vectorstore laden, falls vorhanden
         if os.path.exists(self.vectorstore_path):
-            self.vectorstore = FAISS.load_local(self.vectorstore_path, self.embeddings)
+            self.vectorstore = FAISS.load_local(self.vectorstore_path, self.embeddings, allow_dangerous_deserialization=True)
         else:
             self.vectorstore = None
             print(f"Kein Vectorstore gefunden unter {self.vectorstore_path}. Bitte sicherstellen, dass er existiert.")
 
-    def create_response(self, system_msg, user_msg):
+        # Standardparameter für LLM
+        self.default_model = "gpt-4"
+        self.default_max_tokens = 300
+        self.default_temperature = 0.7
+
+    def create_response(self, user_msg):
         """
-               Erstellt eine Antwort, indem relevante Dokumente aus dem Vectorstore abgerufen
-               und mit dem OpenAI-LLM kombiniert werden.
+        Abstrahiert den LLM-Aufruf mit Standardparametern.
 
-               Args:
-                   system_msg (str): Systemnachricht (z. B. Anweisungen oder Kontext).
-                   user_msg (str): Benutzer-Prompt.
+            Args:
+                user_msg (str): Benutzer-Prompt.
 
-               Returns:
-                   str: Generierte Antwort des LLM oder Fehlermeldung.
-               """
+            Returns:
+                str: Generierte Antwort des LLM.
+        """
         try:
-            # Prüfen, ob ein Vectorstore geladen wurde
-            if not self.vectorstore:
-                return "Der Vectorstore ist nicht verfügbar. Bitte erstellen und speichern Sie den Vectorstore."
-
-            # Relevante Dokumente aus dem Vectorstore abrufen
-            docs = self.vectorstore.similarity_search(user_msg, k=3)
-            context = "\n".join([doc.page_content for doc in docs])
-
-            # Prompt für das LLM erstellen
-            prompt = PromptTemplate(
-                input_variables=["context", "user_msg"],
-                template=(
-                    "Hier sind die relevanten Informationen:\n{context}\n\n"
-                    "Basierend auf diesen Informationen, beantworte bitte die folgende Frage:\n{user_msg}"
-                ),
-            )
-            # Anfrage an OpenAI senden
-            response = openai.ChatCompletion.create(
-                model="gpt-4",
+            response = self.client.chat.completions.create(
+                model=self.default_model,
                 messages=[
-                    {"role": "system", "content": system_msg},
-                    {"role": "user", "content": prompt.format(context=context, user_msg=user_msg)},
+                    {"role": "system", "content": SYSTEM_MSG_1},
+                    {"role": "user", "content": user_msg},
                 ],
-                max_tokens=300,
-                temperature=0.7,
+                max_tokens=self.default_max_tokens,
+                temperature=self.default_temperature,
             )
-
-            # Antwort extrahieren
-            return response["choices"][0]["message"]["content"]
+            return response.choices[0].message.content
         except Exception as e:
             print(f"Fehler bei der Anfrage: {e}")
             return f"Fehler: {e}"
 
-    def analyze_prompt(self, system_msg: str, user_msg: str) -> Union[str, Any]:
+    def analyze_prompt(self, user_msg: str) -> Union[str, Any]:
         """
-        Analysiere einen Prompt und gebe eine Antwort zurück.
+        Analysiert einen Prompt und gibt eine Antwort zurück.
+            - Prüft, ob ein Vectorstore vorhanden ist.
+            - Falls kein Vectorstore vorhanden ist, wird `rag_process` aufgerufen, um einen zu erstellen.
+            - Gibt eine Fehlermeldung zurück, wenn ein Problem beim Abrufen der Daten besteht.
+            - Nutzt LLM, um basierend auf dem Vectorstore und dem Prompt die Frage zu beantworten.
+
         Args:
-            system_msg (str): Systemnachricht (z. B. Anweisungen oder Kontext).
             user_msg (str): Benutzer-Prompt.
 
         Returns:
-            Dict[str, Any]: Antwort des LLMs.
+            str: Generierte Antwort oder Fehlermeldung.
         """
         try:
-            # Anfrage an OpenAI
-            response = openai.Client().chat.completions.create(
+            # 1. Prüfen, ob Vectorstore vorhanden ist
+            if not self.vectorstore:
+                print("Kein Vectorstore gefunden. Starte den RAG-Prozess...")
+                result = rag_process()  # Rufe die Methode für den RAG-Prozess auf
+                print(result)
+                # 2. Nach dem RAG-Prozess erneut prüfen
+                if "Fehler" in result:
+                    print("Vectorstore konnte nicht erstellt werden.")
+                    return "Fehler: Es gibt aktuell Probleme mit dem Datenabruf. Bitte versuchen Sie es später erneut."
+
+             # Vectorstore laden, falls vorhanden
+            if os.path.exists(self.vectorstore_path):
+                self.vectorstore = FAISS.load_local(self.vectorstore_path, self.embeddings, allow_dangerous_deserialization=True)
+            # 3. Relevante Daten aus dem Vectorstore abrufen
+            docs = self.vectorstore.similarity_search(user_msg, k=1)
+            context = "\n".join([doc.page_content for doc in docs])
+
+            # 4. LLM-Aufruf mit Kontext und Prompt
+            prompt = (
+                f"Hier sind die relevanten Informationen:\n{context}\n\n"
+                f"Basierend auf diesen Informationen, beantworte bitte die folgende Frage:\n{user_msg}"
+            )
+            response = self.client.chat.completions.create(
                 model="gpt-4",
                 messages=[
-                    {"role": "system", "content": system_msg},
-                    {"role": "user", "content": user_msg},
+                    {"role": "system", "content": SYSTEM_MSG_2},
+                    {"role": "user", "content": prompt},
                 ],
                 max_tokens=200,
                 temperature=0.7,
             )
+
+            # 5. Antwort extrahieren und zurückgeben
+            return response.choices[0].message.content
+
+        except Exception as e:
+            print(f"Fehler bei der Anfrage: {e}")
+            return f"Fehler: {e}"
+
+    def create_rag_prompt(self, system_msg: str, user_msg: str, data: str) -> str:
+        """
+        Erstellt eine Antwort basierend auf relevanten Daten, die explizit übergeben werden.
+
+        Args:
+            system_msg (str): Systemnachricht.
+            user_msg (str): Benutzer-Prompt.
+            data (str): Relevante Daten für die Antwort.
+
+        Returns:
+            str: Generierte Antwort des LLM.
+        """
+        try:
+            # Prompt für das LLM erstellen
+            prompt = PromptTemplate(
+                input_variables=["data", "user_msg"],
+                template=(
+                    "Hier sind die relevanten Informationen:\n{data}\n\n"
+                    "Basierend auf diesen Informationen, beantworte bitte die folgende Frage:\n{user_msg}"
+                ),
+            )
+            # Anfrage an OpenAI senden
+            response = self.client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": system_msg},
+                    {"role": "user", "content": prompt.format(data=data, user_msg=user_msg)},
+                ],
+                max_tokens=self.default_max_tokens,
+                temperature=self.default_temperature,
+            )
+
             # Antwort extrahieren
             return response.choices[0].message.content
         except Exception as e:
@@ -148,33 +205,17 @@ class HuggingFaceClient(LLMClient):
     Hugging Face-Implementierung der LLM-Schnittstelle.
     """
 
-    def create_response(self, system_msg, user_msg):
+    def create_rag_prompt(self, system_msg: str, user_msg: str, data: str):
+        pass
+
+    def create_response(self, user_msg):
         pass
 
     def __init__(self):
         """
         Initialisiert den Hugging Face-Client mit einem API-Schlüssel aus Umgebungsvariablen.
         """
-        self.api_key = os.getenv("KARLI_API_KEY")
-        if not self.api_key:
-            raise ValueError("KARLI_API_KEY nicht in den Umgebungsvariablen gefunden.")
-        self.api_url = os.getenv("API_URL")
-        if not self.api_url:
-            raise ValueError("KARLI_API_KEY nicht in den Umgebungsvariablen gefunden.")
+        pass
 
-    def analyze_prompt(self, system_msg: str, user_msg: str) -> Dict[str, Any]:
-        import requests
-
-        headers = {"Authorization": f"Bearer {self.api_key}"}
-        payload = {
-            "inputs": f"{system_msg}\n\n{user_msg}",
-            "parameters": {"max_length": 100},
-        }
-
-        try:
-            response = requests.post(self.api_url, json=payload, headers=headers)
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.RequestException as e:
-            print(f"Fehler bei der Anfrage an Hugging Face: {e}")
-            return {"error": str(e)}
+    def analyze_prompt(self, user_msg: str) -> Dict[str, Any]:
+        pass

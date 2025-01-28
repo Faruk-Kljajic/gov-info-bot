@@ -1,7 +1,7 @@
 import requests
 import os
 
-from info_bot_backend.application.utils.constants import DATA_GOV_AT_URL
+from info_bot_backend.application.utils.constants import DATA_GOV_AT_URL, JSON_FILE_URL, FILE_NAME_JSON
 
 
 class DataService:
@@ -15,7 +15,7 @@ class DataService:
         self.download_folder = download_folder
         os.makedirs(download_folder, exist_ok=True)
 
-    def autocomplete_packages(self, query, limit=3):
+    def autocomplete_packages(self, query, limit):
         """
         Sucht Datensätze (Packages) basierend auf einem Suchbegriff.
         :param query: Suchbegriff für die Paketnamen oder Titel.
@@ -64,12 +64,13 @@ class DataService:
             print(f"Ein Fehler ist aufgetreten: {e}")
             return None
 
-    def download_csv(self, resource_url, filename):
+    def download_json(self, resource_url, filename):
         """
         Lädt eine Datei herunter und speichert sie lokal.
         :param resource_url: URL der Ressource.
         :param filename: Name der gespeicherten Datei.
         :return: Lokaler Pfad zur gespeicherten Datei.
+
         """
         local_path = os.path.join(self.download_folder, filename)
 
@@ -92,7 +93,7 @@ class DataService:
         :param query: Suchbegriff für die Datensätze.
         """
         # Schritt 1: Suche nach Datensätzen
-        datasets = self.autocomplete_packages(query, limit=5)
+        datasets = self.autocomplete_packages(query, limit=1)
         if not datasets:
             print("Keine Datensätze gefunden.")
             return
@@ -105,12 +106,13 @@ class DataService:
         for dataset in datasets:
             details = self.get_package_details(dataset["name"])
             if not details:
+                print(f"Warnung: Keine Details für Datensatz {dataset['name']} gefunden.")
                 continue
 
             print(f"\nRessourcen für Datensatz: {details['title']}")
             for resource in details.get("resources", []):
                 # Beschränkung auf JSON und CSV
-                if resource["format"].lower() in ["csv", "json"]:
+                if resource["format"].lower() in ["json"]:
                     print(f"- Ressource: {resource['name']} ({resource['format']})")
                     print(f"  URL: {resource['url']}")
 
@@ -118,6 +120,12 @@ class DataService:
                     filename = resource["name"].replace(" ", "_")
                     if not filename.endswith(f".{resource['format'].lower()}"):
                         filename += f".{resource['format'].lower()}"
-                    self.download_csv(resource["url"], filename)
+                    self.download_json(JSON_FILE_URL, FILE_NAME_JSON)
                 else:
                     print(f"Übersprungene Ressource (nicht JSON/CSV): {resource['name']} ({resource['format']})")
+
+
+# Beispielnutzung des Services
+if __name__ == "__main__":
+    service = DataService()
+    service.fetch_and_download_data("Ergebnisse der Nationalratswahl 2024")

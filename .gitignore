@@ -20,9 +20,7 @@
 # Pytest cache
 .pytest_cache/
 gov-info-frontend/package-lock.json
-gov-info-backend/__pycache__/
-
-
+__pycache__/
 
 # sensitive data
 info_bot_backend/app/config.py

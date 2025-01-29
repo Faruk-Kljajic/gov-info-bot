@@ -68,7 +68,7 @@ class OpenAIClient(LLMClient):
         self.embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 
         # Vectorstore-Speicherort definieren
-        self.vectorstore_path = os.path.join("../resources/faiss_index")
+        self.vectorstore_path = os.path.join("application/resources/faiss_index")
 
         # Vectorstore laden, falls vorhanden
         if os.path.exists(self.vectorstore_path):
@@ -136,7 +136,7 @@ class OpenAIClient(LLMClient):
             if os.path.exists(self.vectorstore_path):
                 self.vectorstore = FAISS.load_local(self.vectorstore_path, self.embeddings, allow_dangerous_deserialization=True)
             # 3. Relevante Daten aus dem Vectorstore abrufen
-            docs = self.vectorstore.similarity_search(user_msg, k=1)
+            docs = self.vectorstore.similarity_search(user_msg, k=3)
             context = "\n".join([doc.page_content for doc in docs])
 
             # 4. LLM-Aufruf mit Kontext und Prompt

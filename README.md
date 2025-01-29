@@ -4,7 +4,7 @@ Gov Info Bot ist ein Chatbot, der dynamische Antworten auf Anfragen basierend au
 
 ## Funktionen
 
-- Beantwortet Fragen, indem es auf Daten von data.gv.at zugreift
+- Beantwortet Fragen zu Nationalratswahlergebnisse, indem es auf Daten von data.gv.at zugreift
 - Nutzung von FastAPI für das Backend
 - Angular-Frontend zur Benutzerinteraktion
 - Docker-Container für einfache Bereitstellung
@@ -59,26 +59,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
     ng serve
     ```
 
-### Mit Docker ausführen
-
-1. Baue die Docker-Images:
-
-    ```bash
-    docker build -t gov-info-bot-backend ./backend
-    docker build -t gov-info-bot-frontend ./frontend
-    ```
-
-2. Starte die Container:
-
-    ```bash
-    docker run -d -p 8000:8000 gov-info-bot-backend
-    docker run -d -p 4200:4200 gov-info-bot-frontend
-    ```
-
 ## Nutzung
 
 Greife im Browser auf das Angular-Frontend zu:
-
 
 Das Frontend kommuniziert mit dem Backend, das auf `http://localhost:8000` läuft.
 

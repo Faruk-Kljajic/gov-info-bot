@@ -119,7 +119,7 @@ def rag_process(chunk_size=1000, chunk_overlap=50, embedding_model="text-embeddi
         vectorstore = create_faiss_index(splitted_docs, embeddings)
 
         # 6. FAISS-Index speichern
-        index_path = os.path.join("../resources/faiss_index")
+        index_path = os.path.join("./resources/faiss_index")
         save_faiss_index(vectorstore, index_path)
 
         return f"RAG-Prozess erfolgreich abgeschlossen. FAISS-Index gespeichert unter: {index_path}"

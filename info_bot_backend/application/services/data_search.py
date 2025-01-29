@@ -7,7 +7,7 @@ from info_bot_backend.application.utils.constants import DATA_GOV_AT_URL, JSON_F
 class DataService:
     BASE_URL = DATA_GOV_AT_URL
 
-    def __init__(self, download_folder="../resources/downloads"):
+    def __init__(self, download_folder="./resources/downloads"):
         """
         Initialisiert den DataService.
         :param download_folder: Ordner, in dem Dateien gespeichert werden.
@@ -123,9 +123,3 @@ class DataService:
                     self.download_json(JSON_FILE_URL, FILE_NAME_JSON)
                 else:
                     print(f"Übersprungene Ressource (nicht JSON/CSV): {resource['name']} ({resource['format']})")
-
-
-# Beispielnutzung des Services
-if __name__ == "__main__":
-    service = DataService()
-    service.fetch_and_download_data("Ergebnisse der Nationalratswahl 2024")

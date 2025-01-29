@@ -1,5 +1,7 @@
 import json
 import os
+from typing import Any
+
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -19,26 +21,30 @@ def load_json_file(file_name):
     Returns:
         dict: Geladene JSON-Daten.
     """
-    # Absoluter Pfad zum resources-Ordner
-    resources_path = os.path.join("../resources/downloads", file_name)
+    # Pfad zum resources-Ordner
+    resources_path = os.path.join("application/resources/downloads", file_name)
 
     try:
         # Prüfen, ob die Datei existiert
         if os.path.exists(resources_path):
             # Datei laden
-            with open(resources_path, 'r', encoding='utf-8') as file:
-                data = json.load(file)
-            print(f"Datei erfolgreich geladen: {resources_path}")
-            return data
+            return read_download_file(resources_path)
         else:
             # Wenn die Datei nicht existiert, starte Datensuche
             print(f"Datei nicht gefunden: {resources_path}. Starte Datensuche...")
             service = DataService()
             service.download_json(JSON_FILE_URL, FILE_NAME_JSON)
-            return load_json_file(FILE_NAME_JSON)
+            return read_download_file(resources_path)
     except Exception as e:
         print(f"Fehler beim Laden der Datei: {e}")
         raise
+
+
+def read_download_file(path) -> Any:
+    with open(path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    print(f"Datei erfolgreich geladen: {path}")
+    return data
 
 # Daten verarbeiten
 def process_data(json_data):
@@ -119,7 +125,8 @@ def rag_process(chunk_size=1000, chunk_overlap=50, embedding_model="text-embeddi
         vectorstore = create_faiss_index(splitted_docs, embeddings)
 
         # 6. FAISS-Index speichern
-        index_path = os.path.join("./resources/faiss_index")
+        index_path = os.path.join("application/resources/faiss_index")
+        print(index_path)
         save_faiss_index(vectorstore, index_path)
 
         return f"RAG-Prozess erfolgreich abgeschlossen. FAISS-Index gespeichert unter: {index_path}"

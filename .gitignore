@@ -1,21 +1,14 @@
 # IntelliJ IDEA
 .idea/
-/gov-info-frontend/.angular/
-/gov-info-frontend/node_modules/
+
 # Default ignored files
 /shelf/
 
-# Editor-based HTTP Client requests
-/httpRequests/
-
 # Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
+info_bot_backend/application/ressources/
 
 # Virtual environment
 .venv/
-
-
 
 # Pytest cache
 .pytest_cache/
@@ -23,12 +16,10 @@ gov-info-frontend/package-lock.json
 __pycache__/
 
 # sensitive data
-info_bot_backend/app/config.py
 .env
 .idea
 info_bot_backend/.env
-info_bot_backend/app/ressources
-info_bot_backend/app/database
-
-/info_bot_frontend/node_modules/
-/info_bot_frontend/.angular/
+info_bot_backend/application/database/
+info_bot_backend/application/resources/
+info_bot_frontend/node_modules/
+info_bot_frontend/.angular/

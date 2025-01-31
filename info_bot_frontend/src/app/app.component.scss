@@ -66,6 +66,7 @@ html, body {
     background-color: #e8e8e8;
     border: 1px solid #ddd;
     border-radius: 10px;
+
     margin: 0;
     padding: 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -73,6 +74,7 @@ html, body {
     flex-direction: column;
     max-height: calc(100vh - 80px); /* Begrenzung auf Fensterhöhe minus Header */
     overflow: hidden; /* Verhindert Überlauf */
+
 }
 
 /* Chat-Header */
@@ -191,6 +193,7 @@ html, body {
     background-color: #333;
 }
 
+
 /* Chat-Historie */
 .history-header {
     padding: 10px;
@@ -249,6 +252,7 @@ html, body {
     transform: scale(1.02);
 }
 
+
 /* Button-Styles */
 .button {
     padding: 10px 20px;
@@ -282,6 +286,7 @@ html, body {
 .delete-button:hover {
     background-color: darkred;
 }
+
 
 .archive-button {
     background-color: #ff5722;

@@ -199,8 +199,8 @@ class OpenAIClient(LLMClient):
             print(f"Fehler bei der Anfrage: {e}")
             return f"Fehler: {e}"
 
-
 #HuggingFace wurde nur zum Testen verwendet
+
 class HuggingFaceClient(LLMClient):
     """
     Hugging Face-Implementierung der LLM-Schnittstelle.

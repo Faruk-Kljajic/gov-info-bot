@@ -1,43 +1,47 @@
 <!-- Header -->
 <header id="app-header">
-  <h1>Austrian InfoBot</h1>
+    <h1>Austrian InfoBot</h1>
+
 </header>
 
 <!-- Hauptinhalt -->
 <div id="main-content">
-  <!-- Linke Spalte: Chat -->
-  <div id="chat-section">
-    <!-- Chat-Header mit Button -->
-    <div class="chat-header">
-      <h2>Chatbot</h2>
-        <button
-        class="button rag-button"
-        [class.active]="isRagEnabled"
-        (click)="toggleRAG()">
-        RAG
-    </button>
-      <button class="button archive-button" (click)="archiveConversation()">Archivieren</button>
+    <!-- Linke Spalte: Chat -->
+    <div id="chat-section">
+        <!-- Chat-Header mit Buttons -->
+        <div class="chat-header">
+            <h2>Chatbot</h2>
+            <button class="button rag-button" [class.active]="isRagEnabled" (click)="toggleRAG()">RAG</button>
+            <button class="button archive-button" (click)="archiveConversation()">Archivieren</button>
+        </div>
+
+        <!-- Nachrichtenanzeige -->
+        <ul id="messageArea">
+            <li *ngFor="let msg of messages"
+                [ngClass]="{'user-message': msg.sender === 'user', 'bot-message': msg.sender === 'bot'}">
+                {{ msg.text }}
+            </li>
+        </ul>
+
+        <!-- Eingabefeld -->
+        <form id="messageForm" name="messageForm" (ngSubmit)="handleUserMessage()">
+            <input type="text" id="message" [(ngModel)]="message" name="message"
+                   placeholder="Sende eine Nachricht an den Chatbot" autocomplete="off" required/>
+            <button type="submit">Senden</button>
+        </form>
     </div>
 
-    <!-- Nachrichtenanzeige -->
-    <ul id="messageArea">
-      <li *ngFor="let msg of messages" [ngClass]="{'user-message': msg.sender === 'user', 'bot-message': msg.sender === 'bot'}">
-        {{ msg.text }}
-      </li>
-    </ul>
+    <!-- Rechte Spalte: Historie -->
+    <aside id="history-section">
+        <div class="history-header">Chat-Historie</div>
+        <div id="historyArea">
+            <div *ngFor="let chat of chatHistory; let i = index" class="history-item">
+                <div class="chat-title" (click)="loadArchivedChat(chat.id)">
+                    Chat {{ chat.id }}
+                </div>
+                <button class="delete-button" (click)="deleteChat(i)">✖</button>
+            </div>
+        </div>
 
-    <!-- Eingabefeld -->
-    <form id="messageForm" name="messageForm" (ngSubmit)="handleUserMessage()">
-      <input type="text" id="message" [(ngModel)]="message" name="message" placeholder="Sende eine Nachricht an den Chatbot" autocomplete="off" required />
-      <button type="submit">Senden</button>
-    </form>
-  </div>
-
-  <!-- Rechte Spalte: Historie -->
-  <aside id="history-section">
-    <div class="history-header">Chat-Historie</div>
-    <div id="historyArea">
-      <div *ngFor="let historyItem of chatHistory">{{ historyItem }}</div>
-    </div>
-  </aside>
+    </aside>
 </div>

@@ -12,10 +12,12 @@ import { ChatService } from './services/chat.service';
 })
 export class AppComponent {
   title = 'ai-chatbot-frontend';
-  message: string = ''; // Nachricht des Nutzers
-  messages: Array<{ text: string; sender: string }> = []; // Nachrichtenliste
-  isRagEnabled: boolean = false; // Zustand von RAG
-  chatHistory: string[] = [];
+
+  message: string = ''; // Eingabe des Nutzers
+  messages: Array<{ text: string; sender: string }> = []; // Aktueller Chat
+  isRagEnabled: boolean = false; // Zustand des RAG-Modus
+  chatHistory: Array<{ id: number; messages: Array<{ text: string; sender: string }> }> = [];
+  chatIdCounter: number = 1;
 
   constructor(private chatService: ChatService) {}
 
@@ -32,7 +34,8 @@ export class AppComponent {
           this.messages.push({ sender: 'bot', text: response.response });
         },
         error: (error) => {
-          // Fehlerbehandlung
+
+
           console.error('Fehler bei der Backend-Anfrage:', error);
           this.messages.push({ sender: 'bot', text: 'Fehler beim Abrufen der Antwort vom Backend.' });
         },
@@ -49,7 +52,21 @@ export class AppComponent {
   }
 
   archiveConversation(): void {
-    console.log('Konversation archiviert.');
-    // Archivierungslogik hier ergänzen
+
+    if (this.messages.length > 0) {
+      this.chatHistory.push({ id: this.chatIdCounter++, messages: [...this.messages] });
+      this.messages = []; // Leert den aktuellen Chat nach dem Archivieren
+      console.log('Chat archiviert.');
+    }
   }
+
+  loadArchivedChat(chatId: number): void {
+    const archivedChat = this.chatHistory.find(chat => chat.id === chatId);
+    if (archivedChat) {
+      this.messages = [...archivedChat.messages];
+    }
+  }
+
+  deleteChat(index: number): void {
+  this.chatHistory.splice(index, 1);
 }

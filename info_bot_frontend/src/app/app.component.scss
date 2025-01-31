@@ -66,9 +66,15 @@ html, body {
     background-color: #e8e8e8;
     border: 1px solid #ddd;
     border-radius: 10px;
-    margin: 0; /* Kein äußerer Abstand */
-    padding: 0; /* Kein innerer Abstand */
+
+    margin: 0;
+    padding: 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 80px); /* Begrenzung auf Fensterhöhe minus Header */
+    overflow: hidden; /* Verhindert Überlauf */
+
 }
 
 /* Chat-Header */
@@ -187,6 +193,66 @@ html, body {
     background-color: #333;
 }
 
+
+/* Chat-Historie */
+.history-header {
+    padding: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+#historyArea {
+    flex-grow: 1;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Sorgt dafür, dass Items die volle Breite nutzen */
+    overflow-y: auto; /* Ermöglicht vertikales Scrollen */
+    max-height: 100%;
+    scrollbar-width: thin;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 12px;
+    margin: 5px 10px;
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: left;
+    width: auto;
+    min-height: 40px;
+    transition: background-color 0.3s ease;
+}
+
+/* Chat-Titel als normaler Text */
+.chat-title {
+    flex-grow: 1;
+    padding-left: 10px;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.chat-title:hover {
+    text-decoration: underline;
+}
+
+.history-item:hover {
+    background-color: #f0f0f0;
+}
+
+
+.history-item:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.02);
+}
+
+
 /* Button-Styles */
 .button {
     padding: 10px 20px;
@@ -202,6 +268,25 @@ html, body {
 .button:hover {
     background-color: #333;
 }
+
+.delete-button {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.delete-button:hover {
+    background-color: darkred;
+}
+
 
 .archive-button {
     background-color: #ff5722;

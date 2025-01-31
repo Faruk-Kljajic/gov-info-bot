@@ -21,7 +21,6 @@ export class AppComponent {
 
   constructor(private chatService: ChatService) {}
 
-
   handleUserMessage(): void {
     if (this.message.trim()) {
       // Nachricht des Nutzers zur Anzeige hinzufügen
@@ -34,7 +33,6 @@ export class AppComponent {
           this.messages.push({ sender: 'bot', text: response.response });
         },
         error: (error) => {
-
 
           console.error('Fehler bei der Backend-Anfrage:', error);
           this.messages.push({ sender: 'bot', text: 'Fehler beim Abrufen der Antwort vom Backend.' });
@@ -58,6 +56,7 @@ export class AppComponent {
       this.messages = []; // Leert den aktuellen Chat nach dem Archivieren
       console.log('Chat archiviert.');
     }
+
   }
 
   loadArchivedChat(chatId: number): void {
@@ -69,4 +68,6 @@ export class AppComponent {
 
   deleteChat(index: number): void {
   this.chatHistory.splice(index, 1);
+}
+
 }

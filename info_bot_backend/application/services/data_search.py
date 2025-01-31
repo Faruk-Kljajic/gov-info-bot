@@ -5,7 +5,8 @@ from info_bot_backend.application.utils.constants import DATA_GOV_AT_URL, JSON_F
 
 
 class DataService:
-   # BASE_URL = DATA_GOV_AT_URL
+
+    # BASE_URL = DATA_GOV_AT_URL
 
 
     def __init__(self, download_folder="application/resources/downloads"):

@@ -200,6 +200,7 @@ class OpenAIClient(LLMClient):
             return f"Fehler: {e}"
 
 
+#HuggingFace wurde nur zum Testen verwendet
 class HuggingFaceClient(LLMClient):
     """
     Hugging Face-Implementierung der LLM-Schnittstelle.

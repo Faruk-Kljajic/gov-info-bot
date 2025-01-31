@@ -5,7 +5,9 @@ from info_bot_backend.application.utils.constants import DATA_GOV_AT_URL, JSON_F
 
 
 class DataService:
+
     # BASE_URL = DATA_GOV_AT_URL
+
 
     def __init__(self, download_folder="application/resources/downloads"):
         """
@@ -123,3 +125,4 @@ class DataService:
                     self.download_json(JSON_FILE_URL, FILE_NAME_JSON)
                 else:
                     print(f"Übersprungene Ressource (nicht JSON/CSV): {resource['name']} ({resource['format']})")
+
